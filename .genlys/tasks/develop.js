@@ -6,9 +6,7 @@ var gulp = require('gulp'),
     cleanCSS = require('gulp-clean-css'),
     concat = require('gulp-concat'),
     stylus = require('gulp-stylus'),
-    rename = require('gulp-rename'),
-    imagemin = require('gulp-imagemin'),
-    babel = require("gulp-babel"),
+    sourcemaps = require('gulp-sourcemaps'),
 
     browserSync = require("browser-sync"),
     reload = browserSync.reload;
@@ -30,19 +28,21 @@ gulp.task('view', function () {
 
 gulp.task('script', function () {
     gulp.src(config.path.app.scripts)
-        // TODO: minimize js
-        .pipe(gulp.dest(config.path.dev.js))
-        .pipe(reload({stream: true}));
+    .pipe(uglify())
+    .pipe(gulp.dest(config.path.dev.js))
+    .pipe(reload({stream: true}));
 });
 
 gulp.task('style', function () {
     gulp.src(config.path.app.stylus)
+    .pipe(sourcemaps.init())
         .pipe(stylus())
         .pipe(concat('style.css'))
         .pipe(prefixer())
         .pipe(cleanCSS())
-        .pipe(gulp.dest(config.path.dev.css))
-        .pipe(reload({stream: true}))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(config.path.dev.css))
+    .pipe(reload({stream: true}))
 });
 
 gulp.task('image', function () {
